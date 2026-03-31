@@ -1,0 +1,123 @@
+#include <iostream>
+using namespace std;
+
+int zone, row, column;
+int zone_1[4][6] = { 0 };
+int zone_2[4][6] = { 0 };
+int zone_3[4][6] = { 0 };
+
+
+void arr_output(int arr[4][6], int n) {
+    int i, j;
+
+    cout << "1 2 3  4 5 6     (" << n << "구역)\n";
+    cout << "-------------\n";
+
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 6; j++) {
+            cout << arr[i][j] << " ";
+            if (j == 2)
+                cout << " ";
+        }
+        cout << endl;
+    }
+}
+
+void seat_select() {
+    while (1) {
+        cout << "\n구역을 선택해주세요. : ";
+        cin >> zone;
+
+        if (zone > 0 && zone < 4)
+            break;
+        cout << "예약 가능한 구역이 아닙니다. \n";
+    }
+
+    while (1) {
+        cout << "몇번째 줄, 몇번째 좌석을 예약하시겠습니까? : ";
+        cin >> row >> column;
+
+        if (row >= 0 && row < 5 && column >= 0 && column < 7) {     //올바른 입력일 때
+            if (zone == 1 && zone_1[row - 1][column - 1] == 1)        //이미 예약된 경우
+                cout << "이미 예약된 좌석입니다. \n\n";
+            else if (zone == 2 && zone_2[row - 1][column - 1] == 1)
+                cout << "이미 예약된 좌석입니다. \n\n";
+            else if (zone == 3 && zone_3[row - 1][column - 1] == 1)
+                cout << "이미 예약된 좌석입니다. \n\n";
+            else
+                break;
+                continue;
+        }   //if문 끝
+        cout << "예약 가능한 좌석이 아닙니다. \n";
+    }   //while문 끝
+}
+
+
+int main() {
+    int i;
+    int con = 1;
+    int menu;
+    int adult_num, child_num;
+    int price=0;
+
+    while (con == 1) {
+        cout << "**비행기 예약 시스템**" << endl;
+        cout << "1. 좌석 예약" << endl;
+        cout << "2. 좌석 변경" << endl;
+        cout << "3. 프로그램 종료" << endl;
+        cout << "번호를 입력하시오 : ";
+        cin >> menu;
+
+        switch (menu) {     //메뉴 이동용 스위치
+        case 1:
+            cout << endl;
+            arr_output(zone_1, 1);
+            cout << endl;
+            arr_output(zone_2, 2);
+            cout << endl;
+            arr_output(zone_3, 3);
+
+            // 사람 수 입력
+            cout << endl;
+            cout << "성인 (50000원): ";
+            cin >> adult_num;
+            cout << "유아 (40000원): ";
+            cin >> child_num;
+
+            //가격 저장
+            price += adult_num * 50000 + child_num * 40000;
+
+            //좌석 선택
+            for (i = 0; i < adult_num + child_num; i++) {
+                seat_select();
+
+                // 예약된 좌석 1로 표시
+                if (zone == 1)
+                    zone_1[row - 1][column - 1] = 1;
+                else if (zone == 2)
+                    zone_2[row - 1][column - 1] = 1;
+                else
+                    zone_3[row - 1][column - 1] = 1;
+            }
+            cout << endl << "예약되었습니다.\n\n\n";
+
+            break;
+
+        case 2: 
+            //아직 못 함
+            break;
+
+        case 3:
+            cout << "총 " << price << "원입니다.\n";
+            con = 0;
+            break;
+
+        default:
+            cout << "잘못된 입력입니다.\n\n\n";
+
+        }
+
+    }
+
+    return 0;
+}
