@@ -2,25 +2,52 @@
 using namespace std;
 
 int zone, row, column;
+int new_zone, new_row, new_column;
 int zone_1[4][6] = { 0 };
 int zone_2[4][6] = { 0 };
 int zone_3[4][6] = { 0 };
 
 
-void arr_output(int arr[4][6], int n) {
+void arr_output() {
     int i, j;
 
-    cout << "1 2 3  4 5 6     (" << n << "구역)\n";
+    // 1구역
+    cout << "\n-------------\n";
+    cout << "1 2 3  4 5 6   (1구역)\n";
     cout << "-------------\n";
-
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 6; j++) {
-            cout << arr[i][j] << " ";
+            cout << zone_1[i][j] << " ";
             if (j == 2)
                 cout << " ";
         }
         cout << endl;
     }
+    // 2구역
+    cout << "-------------\n";
+    cout << "1 2 3  4 5 6   (2구역)\n";
+    cout << "-------------\n";
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 6; j++) {
+            cout << zone_2[i][j] << " ";
+            if (j == 2)
+                cout << " ";
+        }
+        cout << endl;
+    }
+    // 3구역
+    cout << "-------------\n";
+    cout << "1 2 3  4 5 6   (3구역)\n";
+    cout << "-------------\n";
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 6; j++) {
+            cout << zone_3[i][j] << " ";
+            if (j == 2)
+                cout << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
 }
 
 void seat_select() {
@@ -28,14 +55,14 @@ void seat_select() {
         cout << "\n구역을 선택해주세요. : ";
         cin >> zone;
 
-        if (zone > 0 && zone < 4)
-            break;
-        cout << "예약 가능한 구역이 아닙니다. \n";
-    }
+        if (zone <= 0 || zone >= 4) {
+            cout << "예약 가능한 구역이 아닙니다. \n";
+            continue;
+        }
 
-    while (1) {
+
         cout << "몇번째 줄, 몇번째 좌석을 예약하시겠습니까? : ";
-        cin >> row >> column;
+        cin >> column >> row;
 
         if (row >= 0 && row < 5 && column >= 0 && column < 7) {     //올바른 입력일 때
             if (zone == 1 && zone_1[row - 1][column - 1] == 1)        //이미 예약된 경우
@@ -53,11 +80,84 @@ void seat_select() {
 }
 
 
+void seat_change() {
+    while (1) {      //현재 자리 입력
+        cout << "현재 좌석과 바꿀 좌석을 입력해주세요.\n";
+        cout << "현재 좌석(H구역, N열, M번째) : ";
+        cin >> zone >> column >> row;
+
+        if (row >= 0 && row < 5 && column >= 0 && column < 7 && zone >= 1 && zone <= 3) {   //올바른 값이면
+            //예약된 현재 좌석인지 확인
+            if (zone_1[row - 1][column - 1] == 1)
+                break;
+            else if (zone_2[row - 1][column - 1] == 1) 
+                break;
+            else if (zone_3[row - 1][column - 1] == 1)
+                break;
+            else 
+                cout << "예약된 좌석이 아닙니다.\n\n";
+        }
+        else   //올바른 값이 아니면
+            cout << "잘못된 입력입니다.\n\n";    
+    }//현재 자리 입력 끝
+
+    while (1) {      //바꿀 자리 입력
+        cout << "바꿀 좌석(H구역, N열, M번째) : ";
+        cin >> new_zone >> new_column >> new_row;
+
+        if (new_row >= 0 && new_row < 5 && new_column >= 0 && new_column < 7 && new_zone >= 1 && new_zone <= 3) {   //올바른 값이면
+            if (zone == new_zone && row == new_row && column == new_column) {
+                cout << "현재 좌석을 선택했습니다. 다른 좌석을 입력해주세요.\n";
+            }
+            else if (new_zone == 1 && zone_1[new_row - 1][new_column - 1] == 0) 
+                break;
+            else if (new_zone == 2 && zone_2[new_row - 1][new_column - 1] == 0)
+                break;
+            else if (new_zone == 3 && zone_3[new_row - 1][new_column - 1] == 0)
+                break;
+            else
+                cout << "예약 가능한 좌석이 아닙니다.\n\n";
+        }
+        else //올바른 값이 아니면
+            cout << "잘못된 입력입니다.\n";
+    } //바꿀 자리 입력 끝
+
+    switch (zone) {     //현재 예약 취소
+    case 1:
+        zone_1[row - 1][column - 1] = 0;
+        break;
+    case 2:
+        zone_2[row - 1][column - 1] = 0;
+        break;
+    case 3:
+        zone_3[row - 1][column - 1] = 0;
+        break;
+    default:
+        break;
+    }
+
+    switch (new_zone) {     //바꿀 좌석 예약
+    case 1:
+        zone_1[new_row - 1][new_column - 1] = 1;
+        break;
+    case 2:
+        zone_2[new_row - 1][new_column - 1] = 1;
+        break;
+    case 3:
+        zone_3[new_row - 1][new_column - 1] = 1;
+        break;
+    default:
+        break;
+    }
+
+}
+
+
 int main() {
     int i;
     int con = 1;
     int menu;
-    int adult_num, child_num;
+    int adult_num, child_num, change_num;
     int price=0;
 
     while (con == 1) {
@@ -70,12 +170,7 @@ int main() {
 
         switch (menu) {     //메뉴 이동용 스위치
         case 1:
-            cout << endl;
-            arr_output(zone_1, 1);
-            cout << endl;
-            arr_output(zone_2, 2);
-            cout << endl;
-            arr_output(zone_3, 3);
+            arr_output();
 
             // 사람 수 입력
             cout << endl;
@@ -99,12 +194,31 @@ int main() {
                 else
                     zone_3[row - 1][column - 1] = 1;
             }
-            cout << endl << "예약되었습니다.\n\n\n";
+            cout << endl << "예약되었습니다.\n";
+
+            arr_output();
 
             break;
 
         case 2: 
-            //아직 못 함
+            
+            arr_output();
+            
+            do {
+                cout << "바꿀 좌석의 갯수를 입력하시오. : ";
+                cin >> change_num;
+
+                if (change_num > adult_num + child_num)
+                    cout << "예약한 좌석의 수를 초과합니다.\n";
+
+            } while (change_num>adult_num+child_num);
+            
+
+            for (i = 0; i < change_num; i++) {
+                seat_change();
+                cout << "변경되었습니다. \n\n";
+            }
+            arr_output();
             break;
 
         case 3:
