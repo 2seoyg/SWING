@@ -1,1 +1,64 @@
 #include <iostream>
+#include <string>
+using namespace std;
+
+int acc_num;
+string name[];
+
+
+int main() {
+    int menu, con;
+    con = 1;
+    
+
+    while (con == 1) {
+        cout << "=========== 은행 계좌 관리 시스템 ============" << endl;
+        cout << "1. 현재 등록된 계좌 리스트 보기" << endl;
+        cout << "2. 신규 계좌 등록" << endl;
+        cout << "3. 입금 및 출금" << endl;
+        cout << "4. 계좌 간 이체" << endl;
+        cout << "5. 프로그램 종료" << endl;
+        cout << "============================================" << endl;
+        cout << "메뉴 선택 : ";
+        cin >> menu;
+
+        switch (menu) {
+        case 1:     //1. 현재 등록된 계좌 리스트 보기 
+            cout << "-------------- [현재 등록된 계좌 리스트] ----------------" << endl;
+            if (acc_num == 0) {
+                cout << "(등록된 계좌가 없습니다.)" << endl;
+            }
+            else {
+                for (int i = 0; i < acc_num; i++) {
+                    cout << i << ". 이름 : ";
+                }
+            }
+
+
+            break;
+
+        case 2:     //2. 신규 계좌 등록
+
+            break;
+
+        case 3:     //3. 입금 및 출금
+
+            break;
+
+        case 4:     //4. 계좌 간 이체
+
+            break;
+
+        case 5:     //5. 프로그램 종료
+            cout << "프로그램을 종료합니다.\n";
+            con = 0;
+            break;
+
+        default:
+            cout << "올바른 번호를 입력해주세요.\n\n";
+            break;
+        }   //switch문 끝
+    } //while문 끝
+
+    return 0;
+}
