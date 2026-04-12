@@ -2,16 +2,107 @@
 #include <string>
 using namespace std;
 
-int acc_num;
-string name[];
+
+//각 계좌들의 이름과 잔액을 다른 배열에 따로 저장한다.
+// 두 배열에서 같은 인덱스를 가진 공간이 같은 계좌의 정보다.
+int acc_num=0;
+string acc_name[20] = {};    //계좌들의 이름만 저장
+int acc_money[20] = {};      //계좌들의 잔액만 저장
+
+string* p_acc_name = acc_name;     //포인터로 배열을 가리킬 때는 &, []없이 이름만.
+int* p_acc_money = acc_money;
+
+
+void acc_registration() {
+    string name;
+    int money;
+
+    cout << "[신규 계좌 등록]" << endl;
+    cout << "등록할 이름 : ";
+    cin >> name;
+    cout << "초기 잔액 : ";
+    cin >> money;
+
+    acc_name[acc_num] = name;    //값에 의한 참조
+    acc_money[acc_num] = money;
+
+    cout << "신규 계좌 등록을 완료했습니다.\n\n";
+    acc_num++;
+}
+
+void Deposit_and_withdrawal(string* name, int* money) {
+    int menu;
+    int transaction;
+
+    do {
+        cout << endl;
+        cout << "(1)입금  (2)출금 : ";
+        cin >> menu;
+        if (menu != 1 && menu != 2)
+            cout << "올바른 번호를 입력하세요. (1 또는 2)\n";
+    } while (menu != 1 && menu != 2);
+
+    switch (menu) {
+    case 1:     //입금
+        cout << "거래 금액 입력 : ";
+        cin >> transaction;
+        *money += transaction;
+        cout << "완료되었습니다.\n";
+        cout << *name << "님의 현재 잔액 : " << *money << endl << endl;
+
+        break;
+    case 2:     //출금
+        do {
+            cout << "거래 금액 입력 : ";
+            cin >> transaction;
+            if (*money < transaction)
+                cout << "잔액이 부족합니다.\n";
+        } while (*money < transaction);
+
+        *money -= transaction;
+        cout << "완료되었습니다.\n";
+        cout << *name << "님의 현재 잔액 : " << *money << endl << endl;
+
+        break;
+    default :
+        break;
+    }
+    
+}
+
+//참조에 의한 호출 활용
+void send_money(int& sender_money, int& receiver_money) {
+    int transaction;
+
+    cout << endl;
+    do {
+        cout << "거래 금액 입력 : ";
+        cin >> transaction;
+        if (sender_money < transaction)
+            cout << "잔액이 부족합니다.\n";
+    } while (sender_money < transaction);
+
+    sender_money -= transaction;
+    receiver_money += transaction;
+    cout << "이체가 완료되었습니다.\n\n";
+}
+
 
 
 int main() {
-    int menu, con;
-    con = 1;
+    int menu, con_main, con_3, con_4;
+    con_main = con_3 = con_4 = 1;
+
+    int i = 0;
+    int j = 0;
+
+    string search_name;
+    string sender, receiver;
+    int sender_index = 0;
+    int receiver_index = 0;
     
 
-    while (con == 1) {
+    while (con_main == 1) {
         cout << "=========== 은행 계좌 관리 시스템 ============" << endl;
         cout << "1. 현재 등록된 계좌 리스트 보기" << endl;
         cout << "2. 신규 계좌 등록" << endl;
@@ -21,37 +112,95 @@ int main() {
         cout << "============================================" << endl;
         cout << "메뉴 선택 : ";
         cin >> menu;
+        cout << endl;
+
 
         switch (menu) {
         case 1:     //1. 현재 등록된 계좌 리스트 보기 
-            cout << "-------------- [현재 등록된 계좌 리스트] ----------------" << endl;
-            if (acc_num == 0) {
-                cout << "(등록된 계좌가 없습니다.)" << endl;
+            cout << "------------ [현재 등록된 계좌 리스트] --------------" << endl;
+            if (acc_num == 0) { //등록된 계좌의 개수가 0
+                cout << "(등록된 계좌가 없습니다.)\n";
             }
-            else {
-                for (int i = 0; i < acc_num; i++) {
-                    cout << i << ". 이름 : ";
+            else {  //등록된 계좌 존재 시
+                for (i = 0; i < acc_num; i++) { //등록된 계좌 수만큼
+                    cout << i+1 << ". 이름: " << p_acc_name[i] << "    잔액: " << p_acc_money[i] << endl;
                 }
             }
-
+            cout << "-----------------------------------------------------\n" << endl;
 
             break;
 
         case 2:     //2. 신규 계좌 등록
-
+            acc_registration();
             break;
+
 
         case 3:     //3. 입금 및 출금
+            con_3 = 1;
+            do {
+                cout << "조회할 이름을 입력하세요 : ";
+                cin >> search_name;
+                for (int i = 0; i < 20; i++) {
+                    if (acc_name[i] == search_name) {
+                        cout << "현재 " << acc_name[i] << "님의 잔액: " << acc_money[i] << "원" << endl;
+                        con_3 = 0;
+                        break;
+                    }
+                    if (i == 19) {  //만약 마지막 인덱스까지 위의 if문에 걸리지 않았다면
+                        cout << "존재하지 않는 이름입니다.\n";
+                       
+                    }
+                }
+                i = 0;
+            } while (con_3 == 1);
+
+            Deposit_and_withdrawal(p_acc_name + i, p_acc_money + i);
 
             break;
 
+
         case 4:     //4. 계좌 간 이체
+            con_4 = 1;
+            do {    //보내는 사람
+                cout << "보내는 분 이름 : ";
+                cin >> sender;
+                for (int i = 0; i < 20; i++) {
+                    if (acc_name[i] == sender) {
+                        sender_index = i;
+                        con_4 = 0;
+                        break;
+                    }
+                    if (i == 19) {  //만약 마지막 인덱스까지 위의 if문에 걸리지 않았다면
+                        cout << "존재하지 않는 이름입니다.\n";
+                    }
+                }
+                i = 0;
+            } while (con_4 == 1);
+
+            con_4 = 1;
+            do {    //받는 사람
+                cout << "받는 분 이름 : ";
+                cin >> receiver;
+                for (int j = 0; j < 20; j++) {
+                    if (acc_name[j] == receiver) {
+                        receiver_index = j;
+                        con_4 = 0;
+                        break;
+                    }
+                    if (j == 19) {  //만약 마지막 인덱스까지 위의 if문에 걸리지 않았다면
+                        cout << "존재하지 않는 이름입니다.\n";
+                    }
+                }
+                j = 0;
+            } while (con_4 == 1);
+
+            send_money(acc_money[sender_index], acc_money[receiver_index]);
 
             break;
 
         case 5:     //5. 프로그램 종료
             cout << "프로그램을 종료합니다.\n";
-            con = 0;
+            con_main = 0;
             break;
 
         default:
@@ -62,3 +211,4 @@ int main() {
 
     return 0;
 }
+
