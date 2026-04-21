@@ -17,6 +17,11 @@ void acc_registration() {
     string name;
     int money;
 
+    if (acc_num > 19) {
+        cout << "더 이상 계좌를 등록 할 수 없습니다.\n\n ";
+        return;
+    }
+
     cout << "[신규 계좌 등록]" << endl;
     cout << "등록할 이름 : ";
     cin >> name;
@@ -44,8 +49,14 @@ void Deposit_and_withdrawal(string* name, int* money) {
 
     switch (menu) {
     case 1:     //입금
-        cout << "거래 금액 입력 : ";
-        cin >> transaction;
+        do {
+            cout << "거래 금액 입력 : ";
+            cin >> transaction;
+              if (transaction <= 0) {
+                 cout << "올바른 값을 입력해주세요.\n";
+              }
+        } while (transaction <= 0);
+
         *money += transaction;
         cout << "완료되었습니다.\n";
         cout << *name << "님의 현재 잔액 : " << *money << endl << endl;
@@ -55,9 +66,13 @@ void Deposit_and_withdrawal(string* name, int* money) {
         do {
             cout << "거래 금액 입력 : ";
             cin >> transaction;
+            if (transaction <= 0) {
+                cout << "올바른 값을 입력해주세요.\n";
+                continue;
+            }
             if (*money < transaction)
                 cout << "잔액이 부족합니다.\n";
-        } while (*money < transaction);
+        } while (*money < transaction || transaction <= 0);
 
         *money -= transaction;
         cout << "완료되었습니다.\n";
@@ -78,9 +93,13 @@ void send_money(int& sender_money, int& receiver_money) {
     do {
         cout << "거래 금액 입력 : ";
         cin >> transaction;
+        if (transaction <= 0) {
+            cout << "올바른 값을 입력해주세요.\n";
+            continue;
+        }
         if (sender_money < transaction)
             cout << "잔액이 부족합니다.\n";
-    } while (sender_money < transaction);
+    } while (sender_money < transaction || transaction <= 0);
 
     sender_money -= transaction;
     receiver_money += transaction;
