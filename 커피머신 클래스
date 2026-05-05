@@ -1,4 +1,39 @@
 #include <iostream>
+using namespace std;
 
 class CoffeeMachine {
+private:
+	bool isOn;
+	int coffeebeanAmount;
+	int sludgeAmount;
 
+public:
+	CoffeeMachine();
+	CoffeeMachine(int bean);	//매개변수를 뭐를 받아야 하지?
+	~CoffeeMachine();
+
+	void getCoffee(int menu);
+	void machinePower();
+	void sludgeMessage();
+	void coffeebeanMessage();
+};
+
+CoffeeMachine::CoffeeMachine() {	//기본 생성자
+	isOn = 0;
+	coffeebeanAmount = 0;
+	sludgeAmount = 0;
+
+	cout << "커피머신 설치 (원두 양: 0)" << endl;
+}
+
+CoffeeMachine::CoffeeMachine(int bean) {	//매개변수 생성자
+	isOn = 0;
+	coffeebeanAmount = bean;
+	sludgeAmount = 0;
+
+	cout << "커피머신 설치 (원두 양: " << bean << ")" << endl;
+}
+
+CoffeeMachine::~CoffeeMachine() {	//소멸자
+	cout << "커피머신 종료" << endl;
+}
