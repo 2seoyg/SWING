@@ -9,10 +9,11 @@ private:
 
 public:
 	CoffeeMachine();
-	CoffeeMachine(int bean);	//매개변수를 뭐를 받아야 하지?
+	CoffeeMachine(int bean);	
 	~CoffeeMachine();
 
 	void getCoffee(int menu);
+	void manageMachine(int menu);
 	void machinePower();
 	void sludgeMessage();
 	void coffeebeanMessage();
@@ -36,4 +37,111 @@ CoffeeMachine::CoffeeMachine(int bean) {	//매개변수 생성자
 
 CoffeeMachine::~CoffeeMachine() {	//소멸자
 	cout << "커피머신 종료" << endl;
+}
+
+void CoffeeMachine::getCoffee(int menu) {
+	if (coffeebeanAmount < 5) {
+		CoffeeMachine::coffeebeanMessage();
+	}
+	else if (sludgeAmount >= 15) {
+		CoffeeMachine::sludgeMessage();
+	}
+	else {
+		switch (menu) {
+		case 1:
+			cout << "아메리카노를 선택했습니다.\n";
+			/*
+			 *   /       \
+			 *     \
+			 *     /    /
+			 *    \
+			 *     \   \
+			 *  _____________  _
+			 * |=============|/A\
+			 * |             | U/
+			 * |_____________|_/
+			 *  \           /
+			 *   \_________/
+			 */
+			coffeebeanAmount -= 5;
+			cout << "   /       \\\n     \\\n     /    /\n    \\\n     \\   \\\n _____________  _\n |=============|/A\\\n |             | U/\n |_____________|_/\n  \\           /\n   \\_________/\n\n";
+			sludgeAmount += 5;
+			break;
+		case 2:
+			cout << "에스프레소를 선택했습니다.\n";
+			coffeebeanAmount -= 5;
+			cout << "   /       \\\n     \\\n     /    /\n    \\\n     \\   \\\n _____________  _\n |=============|/A\\\n |             | U/\n |_____________|_/\n  \\           /\n   \\_________/\n\n";
+			sludgeAmount += 5;
+			break;
+		case 3:
+			cout << "아이스 아메리카노를 선택했습니다.\n";
+			coffeebeanAmount -= 5;
+			cout << "   /       \\\n     \\\n     /    /\n    \\\n     \\   \\\n _____________  _\n |=============|/A\\\n |             | U/\n |_____________|_/\n  \\           /\n   \\_________/\n\n";
+			sludgeAmount += 5;
+			break;
+		default:
+			cout << "잘못된 입력입니다.";
+			break;
+		}
+	}
+}
+
+void CoffeeMachine::manageMachine(int menu) {
+	switch (menu) {
+	case 1: 
+		coffeebeanAmount = 100;
+		cout << "원두가 채워졌습니다.\n";
+		break;
+	case 2:
+		sludgeAmount = 0;
+		cout << "커피 찌꺼기 통이 비워졌습니다.\n";
+		break;
+	default:
+		cout << "잘못된 입력입니다. \n";
+		break;
+	}
+}
+
+void CoffeeMachine::machinePower() {
+	if (isOn == true) {
+		isOn = 0;
+		cout << "전원이 꺼졌습니다.\n";
+	}
+	else {
+		isOn = 1;
+		cout << "전원이 켜졌습니다.\n";
+	}
+}
+
+void CoffeeMachine::sludgeMessage() {
+	if (sludgeAmount >= 15) {
+		cout << "커피 찌꺼기 통을 비워주세요.\n";
+	}
+}
+
+void CoffeeMachine::coffeebeanMessage() {
+	if (coffeebeanAmount < 5) {
+		cout << "원두를 넣어주세요.\n";
+	}
+}
+
+int main() {
+	
+	CoffeeMachine ultra1;
+
+	ultra1.machinePower();
+	ultra1.getCoffee(1);		//아메리카노 뽑기 (원두 없어서 안 됨)
+	ultra1.manageMachine(1);	//원두 채우기
+
+	ultra1.getCoffee(1);		//아메리카노 뽑기
+	ultra1.getCoffee(2);		//에스프레소
+	ultra1.getCoffee(3);		//아이스아메리카노
+
+	ultra1.getCoffee(1);		//아메리카노 (슬러지 다 차서 안 됨)
+	ultra1.manageMachine(2);	//슬러지 비우기
+	ultra1.getCoffee(1);
+
+
+
+	return 0;
 }
