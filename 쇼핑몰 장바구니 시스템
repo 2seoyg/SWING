@@ -119,7 +119,7 @@ int main() {
         case 4:
             cout << "-------- [주문 상세 내역] --------" << endl;
             if (history.size() == 0) {
-                cout << "(결제 내역이 없습니다.)" << endl << endl;
+                cout << "(결제 내역이 없습니다.)" << endl;
             }
             else {
                 printVector(history);
