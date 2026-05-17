@@ -3,11 +3,42 @@
 #include <vector>
 using namespace std;
 
+struct Item {   //구조체 정의
+    string name;
+    int price, quantity;
+
+    Item(string name, int price, int quantity) 
+        : name(name), price(price), quantity(quantity) {}
+    //바로 위의 코드는 생성자.  멤버변수(매개변수) 아래 코드와 같은 역할. 초기화 리스트
+};
+
+//함수 정의. 매개함수에 집어넣을 벡터 참조
+void addItem(vector<Item*>& shopping_cart, string name, int price, int quantity) {
+    Item* newItem = new Item(name, price, quantity);    //새로 넣을 Item타입의 변수를 동적 할당
+    shopping_cart.push_back(newItem);
+}
+
+void printVector(vector<Item*>& shopping_cart) {
+    //vector.size()를 이용해 원소의 개수만큼 반복
+    for (int i = 0; i < shopping_cart.size(); i++) {
+        cout << "- " << shopping_cart[i]->name << "[" << shopping_cart[i]->quantity << "개]";
+        cout << " : " << shopping_cart[i]->price * shopping_cart[i]->quantity << "원 ";
+        cout << " (단가: " << shopping_cart[i]->price << "원)" << endl;
+    }
+}
+
+
 
 int main() {
-    int menu, con_main;
-    vector<string> shopping_cart;
+    int menu;
+    int con_main = 1;
+    int total = 0;
+    int item_price, item_quantity;
+    string item_name;
+    char yesorno;
 
+    vector<Item*> shopping_cart; //장바구니를 벡터로 
+    vector<Item*> history;       //결제 내역을 벡터로
 
     while (con_main == 1) {
         cout << "=========== 쇼핑몰 장바구니 시스템 ============" << endl;
@@ -25,22 +56,82 @@ int main() {
         switch (menu) {
         case 1:
             cout << "[장바구니 담기]" << endl;
+            cout << "상품 이름 입력: ";
+            cin >> item_name;
+            cout << "상품 가격 입력: ";
+            cin >> item_price;
+            cout << "상품 개수 입력: ";
+            cin >> item_quantity;
 
+            addItem(shopping_cart, item_name, item_price, item_quantity);
+
+            cout << "상품 추가를 완료했습니다.\n" << endl;
 
             break;
 
         case 2:
+            cout << "-------- [장바구니 목록] --------" << endl;
+            if (shopping_cart.size() == 0) {
+                cout << "(장바구니에 담긴 상품이 없습니다.)" << endl;
+            }
+            else {
+                printVector(shopping_cart);
+            }
+            cout << "--------------------------------" << endl << endl;
             break;
 
 
         case 3:
+
+            if (shopping_cart.size() == 0) {
+                cout << "장바구니에 담긴 상품이 없습니다." << endl << endl;
+            }
+            else {  //장바구니에 뭐가 있을 때
+                for (int i = 0; i < shopping_cart.size(); i++) {
+                    total += (shopping_cart[i]->price * shopping_cart[i]->quantity);
+                }   //계산해야 할 돈 계산
+
+                //장바구니 목록 출력
+                cout << "-------- [장바구니 목록] --------" << endl;
+                printVector(shopping_cart);
+                cout << "---------------------------------" << endl << endl;
+
+                // 결제 확인
+                cout << "최종 결제 금액: " << total << endl;
+                cout << "결제하시겠습니까? (Y/N) : ";
+                cin >> yesorno;
+                if (yesorno == 'Y' || yesorno == 'y') { //결제할 때
+                    cout << "결제가 완료되었습니다. 장바구니를 비웁니다." << endl << endl;
+                    for (int i = 0; i < shopping_cart.size(); i++) {
+                        history.push_back(shopping_cart[i]);    //장바구니 내용을 결제내역으로 옮김
+                    }
+                    shopping_cart.clear();  //장바구니 
+                }
+                else if (yesorno == 'N' || yesorno == 'n') {
+                    cout << "결제가 취소되었습니다." << endl << endl;
+                }
+                else
+                    cout << "잘못된 입력입니다." << endl << endl;
+            }
+            
             break;
 
         case 4:
+            cout << "-------- [주문 상세 내역] --------" << endl;
+            if (history.size() == 0) {
+                cout << "(결제 내역이 없습니다.)" << endl << endl;
+            }
+            else {
+                printVector(history);
+            }
+            cout << "---------------------------------" << endl << endl;
             break;
 
         case 5:     //5. 프로그램 종료
             cout << "프로그램을 종료합니다.\n";
+            for (int i = 0; i < history.size(); i++)
+                delete history[i];    //결제내역은 따로 내용을 지우지 않으니 프로그램 종료 시 메모리 반납
+            history.clear();
             con_main = 0;
             break;
 
